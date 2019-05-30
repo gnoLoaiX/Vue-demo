@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>品牌列表案例</title>
+    <script src="../lib/vue-2.4.0.js"></script>
+    <link rel="stylesheet" href="../lib/bootstrap-3.3.7.css">
+</head>
+<body>
+    <div id="app">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">添加品牌</h3>
+            </div>
+            <div class="panel-body form-inline">
+                <label>Id:
+                    <input type="text" class="form-control" v-model="id">
+                </label>
+                <label>Name:
+                    <input type="text" class="form-control" v-model="name">
+                </label>
+                <input type="button" value="添加" class="btn btn-primary" @click="add()">
+                <label>搜索名称关键字：
+                    <input type="text" class="form-control" v-model="keywords">
+                </label>
+            </div>
+        </div>  
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Ctime</th>
+                    <th>Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 之前， v-for 中的数据，都是直接从 data 上的list中直接渲染过来的 -->
+                <!-- 现在， 我们自定义了一个 search 方法，同时，把 所有的关键字，通过传参的形式，传递给了 search 方法 过滤 list 的关键字 -->
+                <!-- 在 search 方法内部，通过 执行 for 循环， 把所有符合 搜索关键字的数据，保存到 一个新数组中，返回然后渲染 -->
+                <tr v-for="item in search(keywords)" :key="item.id">
+                    <td>{{ item.id }}</td>
+                    <td v-text="item.name"></td>
+                    <td>{{ item.ctime }}</td>
+                    <td>
+                        <!-- 不阻止的话 会刷新页面 使用默认修饰符 -->
+                        <a href="" @click.prevent="del(item.id)">删除</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>       
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                id: "",
+                name: "",
+                keywords: "",
+                list: [
+                    {id: 1, name: '奔驰', ctime: new Date() },
+                    {id: 2, name: '宝马', ctime: new Date() }
+                ]
+
+            },
+            methods: {
+                add(){
+                    var add = {id: this.id, name: this.name, ctime: new Date()}
+                    this.list.push(add)
+                    this.id = this.name = ""
+                },
+                del(id){
+                // 分析：
+                // 1. 如何根据Id，找到要删除这一项的索引 首先先遍历: 如findIndex / some / forEach
+                // 2. 如果找到索引了，直接调用 数组的 splice 方法
+                    // 方法一
+                    // this.list.filter((item, i) => {
+                    //     if (item.id == id) {
+                    //         this.list.splice(i, 1)
+                    //         return true
+                    //     }
+                    // })  
+
+                    // 方法二
+                    var index = this.list.findIndex(item => {
+                        if(item.id == id) {
+                            return true
+                        }
+                    })
+                    this.list.splice(index, 1)
+                },
+                search(keywords){
+                    // 方法一
+                    //  ES6中，为字符串提供了一个新方法，叫做  String.prototype.includes('要包含的字符串')
+                    // return this.list.filter(item => {
+                    //     if(item.name.includes(keywords)){
+                    //         return item
+                    //     }
+                    // })
+
+                    // 方法二
+                    var newList = []
+                    this.list.forEach(element => {
+                        if (element.name.indexOf(keywords) != -1) {
+                            newList.push(element)
+                        }
+                    })
+                    return newList
+                }
+            }
+        })
+    </script>
+</body>
+</html>

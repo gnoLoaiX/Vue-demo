@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>品牌列表案例</title>
+    <script src="../lib/vue-2.4.0.js"></script>
+    <link rel="stylesheet" href="../lib/bootstrap-3.3.7.css">
+</head>
+<body>
+    <!-- 组件一 -->
+    <div id="app">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">添加品牌</h3>
+            </div>
+            <div class="panel-body form-inline">
+                <label>Id:
+                    <input type="text" class="form-control" v-model="id" v-focus>
+                </label>
+                <label>Name:
+                    <!-- 自定义按键指令 需要全局定义 -->
+                    <input type="text" class="form-control" v-model="name" @keyup.down="add">
+                </label>
+                <input type="button" value="添加" class="btn btn-primary" @click="add()">
+                <label>搜索名称关键字：
+                    <input type="text" class="form-control" v-model="keywords">
+                </label>
+            </div>
+        </div>  
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Ctime</th>
+                    <th>Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in search(keywords)" :key="item.id">
+                    <td>{{ item.id }}</td>
+                    <td v-text="item.name"></td>
+                    <td>{{ item.ctime | dateFormat }}</td>
+                    <td>
+                        <a href="" @click.prevent="del(item.id)">删除</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>       
+    </div>
+
+    <!-- 组件二 -->
+    <div id="app2">
+        <!-- 报错：如果使用vm实例组件内的私有过滤器的话 要想在不同的组件内使用那么需要定义一个全局的组件 -->
+        <h1 v-color="'cyan'" v-fontweight="900" v-fontsize="50"> {{ dt | dateFormat }} </h1>  
+        <p>两个组件使用了一个全局过滤器</p>
+        <!-- 过滤器的基本使用 -->
+        <p>{{ msg | msgFormat('疯狂+1', '123') | test }}</p>
+    </div>
+
+    <script>
+        // 只看新华字典，是写不出好文章的
+
+        // 全局定义按键
+        Vue.config.keyCodes.down = 40
+        // 全局过滤器的定义-注意：过滤器名称是字符串（Uncaught ReferenceError: dateFormat is not defined）
+        // 要想在组件中使用私有的 那么在目标组件中定义私有指令
+        Vue.filter('dateFormat', function () {
+            var dt = new Date()
+            // yyyy-mm-dd 
+            var y = dt.getFullYear()
+            var m = dt.getMonth() + 1 
+            var d = dt.getDate()
+            var hh = dt.getHours()
+            var mm = dt.getMinutes()
+            var ss = dt.getSeconds()
+            return y + '-' + m + '-' + d + " " + hh + '-' + mm + '-' + ss
+        })
+        // 自定义全局指令-那么多个全局指令怎么办？官方文档中的方法就显得有些不够清爽了
+        Vue.directive('focus', {
+            // 参数见文档 看云：https://www.kancloud.cn/mrxuxu/vue_js/806493
+             // 指令定义对象可以提供如下几个钩子函数
+            inserted: function (el) {
+               // 钩子函数的参数
+                el.focus()
+            }
+        })
+        Vue.directive('color', {
+            bind: function (el, binding) {
+                el.style.color = binding.value
+            }
+        })
+
+        // 创建 vm实例 ViewModel
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                id: "",
+                name: "",
+                keywords: "",
+                list: [
+                    {id: 1, name: '奔驰', ctime: new Date() },
+                    {id: 2, name: '宝马', ctime: new Date() }
+                ]
+
+            },
+            methods: {
+                add(){
+                    var add = {id: this.id, name: this.name, ctime: new Date()}
+                    this.list.push(add)
+                    this.id = this.name = ""
+                },
+                del(id){
+                    var index = this.list.findIndex(item => {
+                        if(item.id == id) {
+                            return true
+                        }
+                    })
+                    this.list.splice(index, 1)
+                },
+                search(keywords){
+                    var newList = []
+                    this.list.forEach(element => {
+                        if (element.name.indexOf(keywords) != -1) {
+                            newList.push(element)
+                        }
+                    })
+                    return newList
+                }
+            },
+            // 定义私有过滤器
+            // filters: {
+            //     dateFormat: function () {
+            //         var dt = new Date()
+            //         // yyyy-mm-dd
+            //         var y = dt.getFullYear()
+            //         var m = dt.getMonth() + 1 
+            //         var d = dt.getDate()
+            //         var hh = dt.getHours()
+            //         var mm = dt.getMinutes()
+            //         var ss = dt.getSeconds()
+            //         return y + '-' + m + '-' + d + " " + hh + '-' + mm + '-' + ss
+            //     }
+            // }
+        })
+
+        var vm2 = new Vue({
+            el: "#app2",
+            data: {
+                dt: new Date(),
+                msg: '曾经，我也是一个单纯的少年，单纯的我，傻傻的问，谁是世界上最单纯的男人'
+            },
+            methods: {
+
+            },
+            directives: {
+                'fontweight': {
+                    bind: function (el, binding) {
+                        el.style.fontWeight = binding.value
+                    }
+                },
+                'fontsize': function (el, binding, vnode) {
+                    // 注意：这个 function 等同于 把 代码写到了 bind 和 update 中去
+                    el.style.fontSize = parseInt(binding.value) + 'px'
+                    console.log(vnode)
+                }
+            },
+            filters: {
+                msgFormat: function (msg, arg, arg2) {
+                    return msg.replace(/单纯/g, arg + arg2)
+                },
+                test: function (msg) {
+                    return msg + "====="
+                }
+            }
+        })
+    </script>
+</body>
+</html>

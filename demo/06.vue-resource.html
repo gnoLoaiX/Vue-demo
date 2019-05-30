@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title></title>
+  <script src="../lib/vue-2.4.0.js"></script>
+  <script src="../lib/vue-resource-1.3.4.js"></script>
+</head>
+<body>
+  <div id="app">
+    <input type="button" value="Get请求" @click="getInfo">
+    <input type="button" value="post请求" @click="postInfo">
+    <input type="button" value="jsonp请求" @click="jsonpInfo">
+  </div>
+  <script>
+    // 如果我们通过全局配置了，请求的数据接口 根域名，则 ，在每次单独发起 http 请求的时候，请求的 url 路径，应该以相对路径开头，前面不能带 /  ，否则 不会启用根路径做拼接；
+    Vue.http.options.root = 'http://jsonplaceholder.typicode.com/';
+    // 全局启用 emulateJSON 选项
+    Vue.http.options.emulateJSON = true;
+
+    var vm = new Vue({
+      el: "#app",
+      data: {
+
+      },
+      methods: {
+        getInfo() {
+          /* then is a promise package  */
+          this.$http.get("users").then(response => {
+            // get body data
+            console.log(response.body)
+          }, response => {
+            // error callback
+            console.log("error callback")
+          })
+        },
+        postInfo() {
+          this.$http.post("users", {}).then(response => {
+            console.log(response)
+          }, response => {
+            console.log("error callback")
+          })
+        },
+        jsonpInfo() {
+          this.$http.jsonp("users").then(response => {
+            console.log(response.body)
+          }, response => {
+            console.log("error callback")
+          })
+        }
+
+      }
+    })
+  </script>
+</body>
+</html>

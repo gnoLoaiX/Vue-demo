@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-for</title>
+    <script src="../lib/vue-2.4.0.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- 1 常规情况 -->
+        <p>{{list[0]}}</p>
+        <!-- 2 v-for第三个参数-->
+        <h4 v-for="(item, index) of list">索引值:{{index}} ------ 每一项: {{item}}</h4>
+        <h4 v-for="item in list">索引值:{{index}} ------ 每一项: {{list}} ---- 每一项: {{item}}</h4>
+        <!-- 3 v-for第一个参数-->
+        <ul>
+            <li v-for="item in object">
+                {{ item }}
+            </li>
+        </ul>
+        <!-- 4 v-for第三个参数-->
+        <p v-for="(value, name, index) in user"> {{value}} --- {{name}} --- {{index}} </p>
+        <!-- 5 -->
+        <div>
+            <label>Id:
+                <input type="text" v-model="id">
+            </label>
+            <label>Name:
+                <input type="text" v-model="name">
+            </label>    
+            <input type="button" value="添加" @click="add">
+            <p v-for="item in array" :key="item.id">
+                <input type="checkbox">{{item.id}} --- {{item.name}}
+            </p>
+        </div>
+
+        <!-- 6 v-if (v-show) -->
+        <input type="button" value="toggle" @click="flag = !flag">
+        <p v-if="flag">这是用v-if控制的内容</p>
+        <p v-show="flag">这是用v-show控制的内容</p>
+    </div> 
+    <script>    
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                list: [1, 20, 30, 52],
+                object: {
+                    title: 'How to do lists in Vue',
+                    author: 'Jane Doe',
+                    publishedAt: '2016-04-10'
+                },
+                user: {
+                    id: 1,
+                    name: '托尼·屎大颗',
+                    gender: '男'
+                },
+                id: '',
+                name: '',
+                array: [
+                    { id: 1, name: '李斯' },
+                    { id: 2, name: '嬴政' },
+                    { id: 3, name: '赵高' },
+                    { id: 4, name: '韩非' },
+                    { id: 5, name: '荀子' }
+                ],
+                flag: false
+            },
+            methods: {
+                add(){
+                    this.array.unshift({ id: this.id, name: this.name })
+                }
+            }
+        })
+    </script>
+</body>
+</html>
