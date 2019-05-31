@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../lib/vue-2.4.0.js"></script>
+  <style>
+    .ball {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background-color: red;
+    }
+  </style>
+</head>
+<!-- 通过第三方类库 或者说手动的写一些过渡类都无法实现 这时候只能借助于动画的钩子函数来实现 也可以叫做动画的生命周期函数 -->
+<!-- v-on代表是事件 之前带个click事件 对应处理函数 不知为何放在07的文件中动画没有出现 故另写文件 -->
+<body>
+  <div id="app">
+    <input type="button" value="快到碗里来" @click="flag4=!flag4">
+    <!-- 1. 使用 transition 元素把 小球包裹起来 -->
+    <transition
+      v-on:before-enter="beforeEnter"
+      v-on:enter="enter"
+      v-on:after-enter="afterEnter">
+      <div class="ball" v-show="flag4"></div>
+    </transition>
+  </div>
+
+  <script>
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        flag4: false
+      },
+      methods: {
+        beforeEnter(el){
+          el.style.transform = "translate(0, 0)"
+        },
+        enter(el, done){
+          el.offsetWidth
+          el.style.transform = "translate(150px, 450px)"
+          el.style.transition = 'all 1s ease'
+          done()
+        },
+        afterEnter(el){
+          this.flag4 = !this.flag4
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

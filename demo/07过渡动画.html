@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue-2.4.0.js"></script>
+    <link rel="stylesheet" href="../lib/animate.css">
+    <style>
+        .v-enter,
+        .v-leave-to {
+            opacity: 0;
+            transform: translateX(150px)
+        }
+        .v-enter-active,
+        .v-leave-active{
+            transition: all 0.8s linear;
+        }
+
+        /* 修改了v-前缀 */
+        .my-enter,
+        .my-leave-to {
+            opacity: 0;
+            transform: translateY(70px);
+        }
+        .my-enter-active,
+        .my-leave-active{
+            transition: all 0.8s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- 使用过渡类名实现过渡动画 -->
+    <!-- 需求： 点击按钮，让 h3 显示，再点击，让 h3 隐藏 -->
+    <!-- 1. 使用 transition 元素，把 需要被动画控制的元素，包裹起来 -->
+    <!-- 2. 自定义两组样式，来控制 transition 内部的元素实现动画 -->
+    <!-- transition 元素，是 Vue 官方提供的 -->
+
+    <!-- 1. 使用过渡类名实现动画 -->
+    <div id="app">
+        <input type="button" value="toggle" @click="flag=!flag">
+        <transition>
+            <h3 v-show="flag">这是一个H3</h3>
+        </transition>
+
+        <!-- 2. 修改v-前缀 只需要在transition 添加属性name-->
+        <hr/>
+        <input type="button" value="toggle2" @click="flag2=!flag2">
+        <transition name="my">
+            <h6 v-show="flag2">这是一个H6</h6>
+        </transition>
+
+        <!-- 3. 使用第三方类库 Animate.css 实现动画 -->
+        <hr/>
+        <input type="button" value="toggle3" @click="flag3=!flag3">
+        <transition 
+            enter-active-class="bounceIn" 
+            leave-active-class="bounceOut" 
+            :duration="{ enter: 200, leave: 400 }">
+            <h3 v-if="flag3" class="animated">这是一个H3</h3>
+        </transition>   
+    </div>
+
+    <script>
+        // 创建 Vue 实例，得到 ViewModel
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                flag: false,
+                flag2: false,
+                flag3: false,
+            },
+            methods: {
+ 
+            }
+        })
+    </script>
+    
+</body>
+</html>
