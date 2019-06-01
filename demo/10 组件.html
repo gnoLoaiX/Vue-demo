@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue-2.4.0.js"></script>
+</head>
+<body>
+    <!-- 组件是可复用的 Vue 实例，且带有一个名字 -->
+    <div id="app">
+        <!-- 1.1：此时会解析为：<h3>这是使用 Vue.extend 创建的组件</h3> -->
+        <mycom1></mycom1>
+        <my-com2></my-com2>
+        <my-com3></my-com3>
+        <login></login>
+    </div>  
+    <template id="temp3">
+        <div>
+            <h1>这是通过 template 元素,在外部定义的组件结构,这个方式,有代码的只能提示和高亮</h1>
+            <h4>好用,不错!</h4>
+        </div>
+    </template> 
+    <!-- <template id="temp4">
+        <h1>这是私有的 login 组件</h1>
+    </template> -->
+
+    <script>
+        /* 2. 组件的使用
+         * 2.1 使用 Vue.component('组件的名称', 创建出来的组件模板对象)
+         * 2.2 通过 template 属性，指定了组件要展示的HTML结构
+         * 注意：如果使用 Vue.component 定义全局组件的时候，组件名称使用了 驼峰命名，则在引用组件的时候，需要把 大写的驼峰改为小写的字 * 母，同时，两个单词之前，使用 - 链接；
+         */
+
+        // 创建组件的方式1 -- 直接，把组件的名称，以 HTML 标签的形式，引入到页面中
+        Vue.component('mycom1', Vue.extend({
+            template: '<h3>这是使用 Vue.extend 创建的组件</h3>'
+        }))
+
+        // 创建组件的方式2
+        // 注意:不论是哪种方式创建出来的组件,组件的 template 属性指向的模板内容,必须有且只能有唯一的一个根元素
+        Vue.component('myCom2', {
+            template: '<div><h3>这是直接使用 Vue.component 创建出来的组件</h3><span>123</span></div>'
+        })     
+        
+        // 创建组件的方式3 --- 在被控制的 #app 外面,使用 template 元素,定义组件的HTML模板结构 
+        Vue.component('myCom3', {
+            template: "#temp3"
+        })
+        
+        // 也可以把私有的login组件抽离出来（通过对象字面量的形式）-但是要在私有组件中声明
+        var login = {
+            template: '<h1>这是私有的 login 组件</h1>'
+        }
+
+        new Vue({
+            el: '#app',
+            data: {},
+            methods: {},
+            // 创建组件的方式4 ---- 定义实例内部私有组件的
+            components: { 
+                // 这个是简写语法（node阶段 - 对象里里面 属性和方法的简写）
+                login
+                //  语法 => '组件的名称': 组件的模板对象
+                // login: {
+                //     template: '#temp4'
+                // }
+            }
+        })
+    </script>
+</body>
+</html>

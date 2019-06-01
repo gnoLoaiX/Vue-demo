@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue-2.4.0.js"></script>
+    <style>
+        .v-enter,
+        .v-leave-to {
+            opacity: 0;
+            transform: translateX(150px);
+        }
+
+        .v-enter-active,
+        .v-leave-active {
+            transition: all 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <mycom1></mycom1>
+        <p>why compontents data must be a function? look down, In order to make the component use multiple times, the data return does not affect each other.It is like a closure application scenario</p>
+        <counter></counter>
+        <hr>
+        <counter></counter>
+        <hr>
+        <counter></counter>
+        <hr>    
+
+        <a href="" @click.prevent="flag=true">登录</a>
+        <a href="" @click.prevent="flag=false">注册</a>
+        <login v-if="flag"></login>
+        <register v-else="flag"></register>
+
+        <!-- Vue提供了 component ,来展示对应名称的组件 -->
+        <!-- component 是一个占位符, :is 属性,可以用来指定要展示的组件的名称 -->
+        <hr>
+        <a href="" @click.prevent="comName='login'">登录</a>
+        <a href="" @click.prevent="comName='register'">注册</a>
+        <!-- 下面的会解析为：<h3>登录组件</h3> -->
+        <component :is="comName"></component> 
+
+        <!-- 要想加上切换动画，用Vue提供的标签 transition 即可  -->
+        <hr>
+        <a href="" @click.prevent="comName='login'">登录</a>
+        <a href="" @click.prevent="comName='register'">注册</a>
+        <transition mode="out-in">
+            <component :is="comName"></component>
+        </transition>
+    </div>
+
+    <!-- 因为组件是可复用的 Vue 实例，所以它们与 new Vue 接收相同的选项，例如 data、computed、watch、methods 以及生命周期钩子等。仅有的例外是像 el 这样根实例特有的选项。 -->
+    <script>
+        Vue.component('mycom1', {
+            template: '<h3>这是全局组件 --- {{msg}} </h3>',
+            data: function () {
+                return {
+                    msg: '这是组件中的data定义中的数据，注意的是，组件中的data必须是一个方法，且这个方法内部还必须返回一个对象才行.组件中 的data 数据,使用方式,和实例中的 data 使用方式完全一样!!!'
+                }
+            }
+        })
+        Vue.component('counter', {
+            template: '<div><input type="button" value="click+1" @click="increment"><h3>{{count}}</h3></div>',
+            data: function () {
+                return {
+                    count: 0
+                }
+            },
+            methods: {
+                increment() {
+                    this.count ++
+                }
+            }
+        })
+
+        // 组件的切换-以及展示对应的组件
+        Vue.component('login', {
+            template: '<h3>登录组件</h3>'
+        })
+        Vue.component('register', {
+            template: '<h3>注册组件</h3>'
+        })
+
+        new Vue({
+            el: '#app',
+            data: {
+                flag: false,
+                comName: 'login'
+            },
+            methods: {}
+        })
+    </script>
+</body>
+</html>

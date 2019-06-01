@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue-2.4.0.js"></script>
+</head>
+
+<body>
+    <div id="app">
+            <!-- 父组件，可以在子组件引用的时候， 通过 属性绑定机制（v-bind:） 的形式, 把 需要传递给 子组件的数据，以属性绑定的形式，传递到子组件内部，供子组件使用 但是无法直接拿 还需要在子组件定义 -->
+        <com1 v-bind:parentmsg="msg"></com1>
+        <com2 v-on:func="show"></com2>
+    </div>
+    <template id="temp1">
+        <!-- 不加div标签会出错？ -->
+        <div> 
+            <hr>
+            <h1>这是子组件</h1>
+            <input type="button" value="这是子组件中的按钮,点击它，触发父组件传递过来的 func 方法" @click="myclick">
+        </div>
+    </template>
+
+    <script>
+        var com2 = {
+            template: '#temp1',
+            data(){
+                return {
+                    sonmsg: { name: '小头儿子', age: 6 }
+                }
+            },
+            methods: {
+                myclick(){
+                    // 拿到 父组件传递过来的方法，并调用这个方法，也可以传递参数给父组件的方法
+                    this.$emit('func', this.sonmsg)
+                }
+            }
+        }
+
+        new Vue({
+            el: '#app',
+            data: {
+                msg: '这是父组件中的数据',
+                datamsgFormSon: null
+            },
+            methods: {
+                show(data){
+                    // 由于自组件传递参数过来了 那么可以间接的作为父组件需要的数据 来进行交互
+                    console.log('调用了父组件身上的 show 方法: --- ' + data)
+                    this.datamsgFormSon = data      
+                }
+            },
+            components: {
+                com1: { 
+                    props: ['parentmsg'],
+                    template: '<h1 @click="change">这是子组件 --- {{ parentmsg }}</h1>',
+                    methods: {
+                        change(){
+                            this.parentmsg = '修改了'
+                            // 注意：在vuejs2.0中，任何试图在组件内修改通过props传入的父组件数据都被认为是anti-pattern的，报以下错误：Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders （https://www.cnblogs.com/kidsitcn/p/5409994.html）
+                        }
+                    },
+                },
+                com2
+            }
+        })
+    </script>
+</body>
+
+</html>
