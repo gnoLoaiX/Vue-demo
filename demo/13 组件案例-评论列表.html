@@ -4,13 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>评论列表案例</title>
+    <title>主要练习父子组件之间传值</title>
     <script src="../lib/vue-2.4.0.js"></script>
     <link rel="stylesheet" href="../lib/bootstrap-3.3.7.css">
 </head>
 <body>
     <div id="app">
-        <comment-box></comment-box>
+        <comment-box @fucn='getComments'></comment-box>
+        <li class="list-group-item" v-for="item in list" :key="item.id">
+            <span class="badge">
+                评论人：{{item.user}}
+            </span>
+            {{ item.content }}
+        </li>
     </div>
     <!-- 定义在外面的好处是较好的使用编辑器进行快速快发 -->
     <template id="temp1">
@@ -40,16 +46,46 @@
             },
             methods: {
                 postComment(){
+                    // this.$emit('func')
+                    // var comment = {id: Date.now(), usre: this.user, content: this.content}
+                    // var list = JSON.parse(localStorage.getItem('cmts') || '[]')
+                    // list.unshift(comment)
+                    // localStorage.setItem('cmts', JSON.stringify(list))
+                    // this.user = this.content = ''
 
+                    var comment = { id: Date.now(), user: this.user, content: this.content }
+
+                    // 从 localStorage 中获取所有的评论
+                    var list = JSON.parse(localStorage.getItem('cmts') || '[]')
+                    list.unshift(comment)
+                    // 重新保存最新的 评论数据
+                    localStorage.setItem('cmts', JSON.stringify(list))
+                    this.user = this.content = ''
+
+                    // this.loadComments() // ?????
+                    this.$emit('func')
                 }
             }
         }
-        
+
         new Vue({
             el: '#app',
-            data: {},
+            data: {
+                list: [
+                    { id: Date.now(), user: '李白', content: '天生我材必有用' },
+                    { id: Date.now(), user: '江小白', content: '劝君更尽一杯酒' },
+                    { id: Date.now(), user: '小马', content: '我姓马， 风吹草低见牛羊的马' }
+                ]
+            },
             methods: {
-
+                getComments(){
+                    var list = JSON.parse(localStorage.getItem('cmts') || '[]')
+                    this.list = list
+                }
+            },
+            // 定义了方法 但是什么实际调用呢？
+            created(){
+                this.getComments()
             },
             components: {
                 commentBox
