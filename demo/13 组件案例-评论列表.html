@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>评论列表案例</title>
+    <script src="../lib/vue-2.4.0.js"></script>
+    <link rel="stylesheet" href="../lib/bootstrap-3.3.7.css">
+</head>
+<body>
+    <div id="app">
+        <comment-box></comment-box>
+    </div>
+    <!-- 定义在外面的好处是较好的使用编辑器进行快速快发 -->
+    <template id="temp1">
+        <div>
+            <div class="form-group">
+                <label>评论人：</label>
+                <input type="text" class="form-control" v-model="user">
+            </div>
+            <div class="form-group">
+                <label>评论内容：</label>
+                <textarea class="form-control" v-model="content"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="button" value="发表评论" class="btn btn-primary" @click="postComment">
+            </div>
+        </div>
+    </template>
+
+    <script>
+        var commentBox = {
+            template: '#temp1',
+            data: function () {
+                return {
+                    user: "",
+                    content: ""
+                }
+            },
+            methods: {
+                postComment(){
+
+                }
+            }
+        }
+        
+        new Vue({
+            el: '#app',
+            data: {},
+            methods: {
+
+            },
+            components: {
+                commentBox
+            }
+        })    
+    </script>
+</body>
+</html>
