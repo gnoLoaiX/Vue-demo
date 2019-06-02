@@ -10,14 +10,15 @@
 </head>
 <body>
     <div id="app">
-        <comment-box @fucn='getComments'></comment-box>
-        <li class="list-group-item" v-for="item in list" :key="item.id">
-            <span class="badge">
-                评论人：{{item.user}}
-            </span>
-            {{ item.content }}
-        </li>
+        <comment-box @func='getComments'></comment-box>
+        <ul class="list-group">
+            <li class="list-group-item" v-for="item in list" :key="item.id">
+                <span class="badge"> 评论人：{{item.user}}</span>
+                {{ item.content }}
+            </li>
+        </ul>
     </div>
+
     <!-- 定义在外面的好处是较好的使用编辑器进行快速快发 -->
     <template id="temp1">
         <div>
@@ -38,7 +39,7 @@
     <script>
         var commentBox = {
             template: '#temp1',
-            data: function () {
+            data(){
                 return {
                     user: "",
                     content: ""
@@ -46,23 +47,14 @@
             },
             methods: {
                 postComment(){
-                    // this.$emit('func')
-                    // var comment = {id: Date.now(), usre: this.user, content: this.content}
-                    // var list = JSON.parse(localStorage.getItem('cmts') || '[]')
-                    // list.unshift(comment)
-                    // localStorage.setItem('cmts', JSON.stringify(list))
-                    // this.user = this.content = ''
-
                     var comment = { id: Date.now(), user: this.user, content: this.content }
-
                     // 从 localStorage 中获取所有的评论
                     var list = JSON.parse(localStorage.getItem('cmts') || '[]')
                     list.unshift(comment)
                     // 重新保存最新的 评论数据
                     localStorage.setItem('cmts', JSON.stringify(list))
                     this.user = this.content = ''
-
-                    // this.loadComments() // ?????
+                    // 处理完存储业务再去调用父组件方法
                     this.$emit('func')
                 }
             }
@@ -77,15 +69,15 @@
                     { id: Date.now(), user: '小马', content: '我姓马， 风吹草低见牛羊的马' }
                 ]
             },
+            // 定义了方法 但是什么时机调用呢？
+            created(){
+                this.getComments()
+            },
             methods: {
                 getComments(){
                     var list = JSON.parse(localStorage.getItem('cmts') || '[]')
                     this.list = list
                 }
-            },
-            // 定义了方法 但是什么时机调用呢？
-            created(){
-                this.getComments()
             },
             components: {
                 commentBox
