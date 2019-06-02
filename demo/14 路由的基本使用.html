@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>路由</title>
+    <script src="../lib/vue-2.4.0.js"></script>
+    <!-- 1. 安装 vue-router 路由模块 -->
+    <script src="../lib/vue-router-3.0.1.js"></script>
+    <style>
+        .v-enter,
+        .v-leave-to {
+            opacity: 0;
+            transform: translateX(140px);
+        }
+        .v-enter-active,
+        .v-leave-active {
+            transition: all 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">   
+        <!-- 2.使用 router-link 组件来导航 -->
+        <!-- router-link 默认渲染为一个a 标签 -->
+        <router-link to="/login?id=10&name=zss">登录/点击接收path参数给组件</router-link>
+        <router-link to="/register">注册</router-link>
+        <router-link to="/index/12/ls">点击接收path参数给组件</router-link>
+
+        <!-- 3. 使用 router-view 组件来显示匹配到的组件 -->
+        <transition mode="out-in">
+            <router-view></router-view>
+        </transition>
+    </div>
+    <script>
+        // 4.创建使用Vue.extend创建组件
+        var login = {
+            // 总结：首先，不用修改path匹配规则，如果要url 传过来的参数 直接通过this.$route.query 就能拿到
+            template: '<h1>登录组件 -- {{ $route.query.id }} -- {{$route.query.name}} </h1>',
+            created(){
+                console.log(this.$route)
+                console.log(this.$route.query)
+            }
+        }
+        var register = {
+            template: '<h1>注册组件</h1>'
+        }
+        var index = {
+            template: '<h1>首页 --- {{ $route.params.id }} --- {{ $route.params.name }}</h1>',
+            created(){
+                // 这是通过meched解析的 出来的对象
+                console.log(this.$route)
+                console.log(this.$route.params)
+            }
+        }
+        
+        // 5.创建一个路由 router 实例，通过 routers 属性来定义路由匹配规则(当 导入 vue-router 包之后，在 window 全局对象中，就有了一个 路由的构造函数，叫做 VueRouter)
+        // console.log(VueRouter)
+        var router = new VueRouter({
+            routes: [
+                // // 这里的 redirect 和 Node 中的 redirect 完全是两码事 (服务端技术-302 客户端通过某种方式手动修改哈希值)
+                // { path: '/', redirect: '/login' },
+                { path: '/login', component: login },
+                { path: '/register', component: register },
+                { path: '/index/:id/:name', component: index }
+                /*
+                * 路由匹配规则:
+                * 每个路由规则，都是一个对象，这个规则对象，身上，有两个必须的属性：
+                *   属性1 是 path， 表示监听 哪个路由链接地址；
+                *   属性2 是 component， 表示，如果 路由是前面匹配到的 path ，则展示 component 属性对应的那个组件
+                * 注意： component 的属性值，必须是一个 组件的模板对象， 不能是 组件的引用名称；
+                */
+            ]
+        })
+
+        new Vue({
+            el: '#app',
+            data: {},
+            methods: {},
+            // 6.使用 router 属性来使用路由规则
+            // router: router
+            router
+        })
+    </script>
+</body>
+</html>
