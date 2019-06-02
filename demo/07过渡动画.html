@@ -8,6 +8,7 @@
     <script src="../lib/vue-2.4.0.js"></script>
     <link rel="stylesheet" href="../lib/animate.css">
     <style>
+        /* 看文档得知.v-enter-to 与 .v-leave 状态是一致的 所以写样式的时候他们可以写成一组 */
         .v-enter,
         .v-leave-to {
             opacity: 0;
@@ -26,7 +27,7 @@
         }
         .my-enter-active,
         .my-leave-active{
-            transition: all 0.8s ease;
+            transition: all 0.5s ease;
         }
     </style>
 </head>
