@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../lib/vue-2.4.0.js"></script>
+  <!-- 1. 导入包 -->
+  <script src="../lib/vue-router-3.0.1.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-model="firstName"> +
+        <input type="text" v-model="lastName"> =
+        <input type="text" v-model="fullName">
+        <hr style="width: 90%; height: 3px; border: none; background-color: #282828">
+
+        <router-link to="/login">登录</router-link>
+        <router-link to="/register">注册</router-link>
+        <router-view></router-view>
+    </div>
+
+  <script>
+    // 2. 创建子组件
+    var login = {
+        template: '<h3>这是登录子组件</h3>'
+    }
+    var register = {
+        template: '<h3>这是注册子组件</h3>'
+    }
+
+    // 3. 创建一个路由对象
+    var router = new VueRouter({
+        routes: [
+            { path: "/", redirect: '/login' },
+            { path: '/login', component: login },
+            { path: '/register', component: register }
+        ]
+    })
+
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            firstName: '',
+            lastName: '',
+            // fullName: ''
+        },
+        methods: {},
+        // 1. Vue 提供了一种更通用的方式来观察和响应 Vue 实例上的数据变动：侦听属性。当你有一些数据需要随着其它数据变动而变动时，你很容易滥用 watch,然而，通常更好的做法是使用计算属性而不是命令式的 watch 回调。
+        // watch: {
+        //     firstName: function (val) {
+        //         // console.log(val)
+        //         this.fullName = val + '-' + this.lastName
+        //     },
+        //     lastName: function (val) {
+        //         // console.log(val)
+        //         this.fullName = this.firstName + '-' + val
+        //     }
+        // }
+        // 上面代码是命令式且重复的。将它与计算属性的版本进行比较：好得多了，不是吗？
+        computed: {
+            fullName: function () {
+                return this.firstName + '-' + this.lastName
+            }
+        },
+        router,
+        watch: {
+            $route: function(val) {
+                if(val.path === '/login'){
+                    console.log('欢迎进入登录页面')
+                } else if(val.path === '/register'){
+                    console.log('欢迎进入注册页面')
+                }
+            } 
+        }
+    })
+  </script>
+</body>
+</html>

@@ -7,6 +7,11 @@
     <title>主要练习父子组件之间传值</title>
     <script src="../lib/vue-2.4.0.js"></script>
     <link rel="stylesheet" href="../lib/bootstrap-3.3.7.css">
+    <style>
+        hr {
+            width: 90%; height: 3px; border: none; background-color: #282828
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -17,6 +22,10 @@
                 {{ item.content }}
             </li>
         </ul>
+        <hr>
+        <input type="text" v-model="firstName" @keyup="getFullName">+
+        <input type="text" v-model="secondName" @keyup="getFullName">=
+        <input type="text" v-model="fullName">
     </div>
 
     <!-- 定义在外面的好处是较好的使用编辑器进行快速快发 -->
@@ -34,6 +43,7 @@
                 <input type="button" value="发表评论" class="btn btn-primary" @click="postComment">
             </div>
         </div>
+    
     </template>
 
     <script>
@@ -67,7 +77,11 @@
                     { id: Date.now(), user: '李白', content: '天生我材必有用' },
                     { id: Date.now(), user: '江小白', content: '劝君更尽一杯酒' },
                     { id: Date.now(), user: '小马', content: '我姓马， 风吹草低见牛羊的马' }
-                ]
+                ],
+                firstName: '',
+                secondName: '',
+                fullName: ''
+
             },
             // 定义了方法 但是什么时机调用呢？
             created(){
@@ -77,6 +91,9 @@
                 getComments(){
                     var list = JSON.parse(localStorage.getItem('cmts') || '[]')
                     this.list = list
+                },
+                getFullName(){
+                    this.fullName = this.firstName + "-" +this.secondName
                 }
             },
             components: {
