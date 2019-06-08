@@ -5,7 +5,7 @@
 <hr>
 总结: 当前学习了几个 Vue 提供的标签了? <br>
 component,  template,  transition,  transitionGroup 
-<hr>
+
 路由步骤：<br>
 1.点击触发url地址的改变，url地址改变之后 触发路由监听进行路由规则匹配 看有没有匹配到的path规则 如果有匹配到的路由规则 代表说展示path 所对应的component 组件 组件要想展示到页面上 那个区域呢? 用router-view 展示到页面中去 （这是路由的匹配的过程）<br>
 2.每次都是手动修改链接 那么vue提供了方式 （渲染结果是a标签） <br>
